@@ -1,0 +1,20 @@
+<%- include header %>
+<% blogArr.forEach(function (blog, index, blogArr) { %>
+<div style="margin-top: 50px;padding:20px;background-color:#ffffff;border: #dddddd 1px solid;box-shadow: #dddddd 1px 1px 1px 1px;">
+    <h1 style="margin-top: 20px;margin-bottom: 20px;">
+        <a href="/u/<%=blog.name%>/<%=blog.time.day%>/<%=blog.title%>">
+            <%= blog.title %>
+        </a>
+    </h1>
+    <span style="font-size: 10px;color: #aaaaaa">
+        <a href="/u/<%=blog.name%>">
+            <%= blog.name %>
+        </a>
+    </span>
+      |
+    <span style="font-size: 10px;color: #aaaaaa"><%= blog.time.minute %></span>
+    <p style="margin-top: 20px;color: #666666;font-size: 15px;line-height: 30px"><%- blog.content %></p>
+</div>
+
+<% }) %>
+<%- include footer %>

@@ -1,0 +1,12 @@
+<%- include header %>
+<div style="padding:20px;background-color:#ffffff;">
+    <span style="font-size: 10px;color: #aaaaaa">
+    <a href="/u/<%= blog.name %>">
+        <%= blog.name %>
+    </a>
+</span>
+    |
+    <span style="font-size: 10px;color: #aaaaaa"><%= blog.time.minute %></span>
+    <div style="margin-top: 20px;color: #666666;font-size: 15px;line-height: 30px"><%-blog.content %></div>
+</div>
+<%- include footer %>
