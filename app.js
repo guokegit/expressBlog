@@ -18,7 +18,7 @@ module.exports = app;
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(flash());
-app.set('port', 3000);
+app.set('port', 22);
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -60,6 +60,6 @@ app.use(session({
 
 routes(app);
 
-app.listen(app.get('port'), function () {
+app.listen(app.get('port'),'0.0.0.0', function () {
     console.log('Express server listening on port ' + app.get('port'));
 });
