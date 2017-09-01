@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="../res/icon/android/ldpi.png" type="image/x-icon">
+    <title>菜谱</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale =0.5, maximum-scale=1.0, user-scalable=0">
+
+    <script src="/bower_components/jquery/dist/jquery.js"></script>
+    <script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css">
+    <style>
+        .clear-padding-left {
+            padding-left: 0;
+        }
+
+        .clear-padding-right {
+            padding-right: 0;
+        }
+
+        .top {
+            margin-top: 20px;
+        }
+    </style>
+    <link rel="stylesheet" href="/bower_components/font-awesome-4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="/bower_components/sweetalert.css">
+    <script src="/bower_components/sweetalert.min.js"></script>
+
+</head>
+<body onkeypress="enter()">
+<a name="nameTop"></a>
+<div>
+    <div class="container">
+        <div class="row top">
+            <div class="col-sm-6 col-sm-offset-0 col-xs-10 col-xs-offset-1">
+                <h4>快乐菜谱
+                    <small>Achievement your colorful life</small>
+                </h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-9 col-sm-offset-0 col-xs-7 col-xs-offset-1 form-group clear-padding-right">
+                <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Search 想吃的,好吃的">
+            </div>
+            <div class="col-sm-3 col-xs-3 clear-padding-left">
+                <button onclick="food()" id="go" type="submit" class="btn btn-primary">Go!</button>
+            </div>
+        </div>
+        <div id="cotent"></div>
+        <div id="butt"></div>
+    </div>
+</div>
+</div>
+<script>
+    //    解析-----------------------
+    var x = 0;
+    function analysis(rs) {
+        var upPage = $("<button type='button' class='btn btn-default '><a href='#nameTop' style='text-decoration:none'>上一页</a></button>");
+        var downPage = $("<button type='button' class='btn btn-default'><a href='#nameTop' style='text-decoration:none'>下一页</a></button>");
+        $(document).ready(function () {
+            upPage.click(function () {
+                console.log($("a"));
+                if (x <=0) {
+                    x = 0;
+                    $("a")[1].href="####";
+                } else {
+                    x -= 4;
+                    $("a")[1].href="#nameTop";
+                    $("a")[2].href="#nameTop"
+                }
+                changePage();
+            });
+            downPage.click(function () {
+                console.log($("a")[2]);
+                if (x >=rs.result.list.length-4) {
+                    x = rs.result.list.length-4;
+                    $("a")[2].href="####";
+                } else {
+                    x += 4;
+                    $("a")[1].href="#nameTop";
+                    $("a")[2].href="#nameTop"
+                }
+                changePage();
+            });
+        })
+        var kong=$("<div style='width:5%'></div>");
+        var page= $("<div style='display: flex;flex-direction: row;justify-content: center;width:100%;padding-bottom:24px'></div>").append(upPage,kong,downPage);
+        var buttonTop=$("<button style='width:34px;position: fixed;top:280px;right:4px'><a href='#nameTop' style='text-decoration:none;'>回到顶部</a></button>");
+        $("#butt").html("");
+        $("#butt").append(page,buttonTop);
+        changePage();
+        function changePage() {
+            $("#cotent").html("");
+            console.log(x);
+            for (var i = x; i < x + 4; i++) {
+                var top = $("<div class='row;top'></div>");
+//            生成名字 : --------------------
+                var h = $("<h4 style='display:inline'>" + rs.result.list[i].name + "</h4>");
+                var small = $("<small>" + rs.result.list[i].tag + "</small>");
+                var name = $("<div class='col-sm-12 col-xs-12'></div>");
+                var idName = $("<div class='row top'></div>");
+                name.append(h, small, '<hr>');
+                idName.append(name);
+//            生成图片: ----------------
+                var img = $("<img class='col-sm-3' style='padding-left:0;padding-bottom:20px'>").prop("src", rs.result.list[i].pic);
+//            生成配料表:-----------------
+                var mater = $("<h4>配料表</h4>");
+                var material = "";
+                for (var k = 0; k < rs.result.list[i].material.length; k++) {
+                    material += rs.result.list[i].material[k].mname +"："+ rs.result.list[i].material[k].amount + "  ";
+                }
+                var mat = $("<div></div>").html(material);
+//            生成做法 : --------------
+                var ol = $("<ol></ol>");
+                for (var j = 0; j < rs.result.list[i].process.length; j++) {
+                    var li = $("<li>" + rs.result.list[i].process[j].pcontent + "</li>");
+                    ol.append(li);
+                }
+                var process = $("<h4>做法</h4>");
+                var content = $("<h4>作者说</h4>");
+                var top = $("<div></div>");
+                var cont = $("<div></div>").html(rs.result.list[i].content.replace('<br />',''));
+                var contain = $("<div class='col-sm-9' style='padding:0'></div>").append(mater, '<hr>', mat, '<hr>', process, '<hr>', ol, '<hr>', content, '<hr>', cont, '<hr>');
+                $("#cotent").append(idName);
+                top.append(img, contain);
+                $("#cotent").append(top);
+            }
+        }
+    }
+    function food() {
+        var refresh = $("<i class='fa fa-refresh fa-spin fa-1x fa-fw'  aria-hidden='true'></i><span>londing...!</span>");
+        $("#go").html(refresh);
+        $("#go").prop("disabled", "disabled");
+        $.ajax({
+            url: 'http://api.jisuapi.com/recipe/search',
+            data: {
+                appkey: 'abdf02e5b0a4dd78',
+                keyword: $("input").val(),
+                num: '20',
+            },
+            type: 'get',
+            dataType: 'jsonp',
+            success: function (rs) {
+                if (rs.result.list == undefined) {
+                    swal({
+                        title: "",
+                        text: "你输的不是吃的!",
+                        type: "error",
+                        showCancelButton: false,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "好吧,我换",
+                        closeOnConfirm: true
+                    });
+                    $("#go").prop("disabled", "");
+                    $("#go").html("Go!");
+                }else {
+                    analysis(rs);
+                }
+                console.log(rs.result.list);
+                $("#go").prop("disabled", "");
+                $("#go").html("Go!");
+            },
+            error: function () {
+                swal({
+                    title: "",
+                    text: "没网了,架网线去!",
+                    type: "error",
+                    showCancelButton: false,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "好吧,我去架线",
+                    closeOnConfirm: true
+                });
+                $("#go").prop("disabled", "");
+                $("#go").html("Go!");
+            }
+        })
+        if ($("input").val() == "") {
+            swal({
+                title: "",
+                text: "你不输入让我怎么搜啊!",
+                type: "error",
+                showCancelButton: false,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "好吧,我输入",
+                closeOnConfirm: true
+            });
+            $("#go").prop("disabled", "");
+            $("#go").html("Go!");
+        }
+    }
+    function enter() {
+        if (event.key == "Enter") {
+            food()
+        }
+    }
+</script>
+</body>
+</html>

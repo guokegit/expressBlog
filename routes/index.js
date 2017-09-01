@@ -212,4 +212,8 @@ module.exports = function (app) {
         req.flash('success', '登出成功!');
         res.redirect('/');//登出成功后跳转到主页
     });
+    
+    app.get('/kaiQiangCaiPu',function (req,res) {
+        res.render('cook')
+    })
 };
