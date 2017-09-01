@@ -1,10 +1,17 @@
 <%- include header %>
 <div style="padding:20px;background-color:#ffffff;">
+
+    <% if (user && (user.name == blog.name)) { %>
+    <span><a class="edit" href="/edit/<%= blog.name %>/<%= blog.time.day %>/<%= blog.title %>">编辑</a></span>
+    <span><a class="edit" href="/remove/<%= blog.name %>/<%= blog.time.day %>/<%= blog.title %>">删除</a></span>
+    <% } %>
+    <br/>
+    
     <span style="font-size: 10px;color: #aaaaaa">
-    <a href="/u/<%= blog.name %>">
-        <%= blog.name %>
-    </a>
-</span>
+        <a href="/u/<%= blog.name %>">
+            <%= blog.name %>
+        </a>
+    </span>
     |
     <span style="font-size: 10px;color: #aaaaaa"><%= blog.time.minute %></span>
     <div style="margin-top: 20px;color: #666666;font-size: 15px;line-height: 30px"><%-blog.content %></div>

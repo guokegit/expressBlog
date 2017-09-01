@@ -206,6 +206,52 @@ module.exports = function (app) {
         })
     })
     
+    //编辑个人博客
+    app.get('/edit/:name/:day/:title',checkLogin,function (req,res) {
+        var currentUser=req.session.user;
+        PostMod.edit(currentUser.name,req.params.day,req.params.title,function (error,blog) {
+            if(error){
+               req.flash('error').toString()
+               return res.redirect('back')
+            }
+            res.render('edit',{
+                title:'编辑',
+                user   : req.session.user,
+                name   : req.session.user == null ? '' : req.session.user.name,
+                blog   : blog,
+                success: req.flash('success').toString(),
+                error  : req.flash('error').toString(),
+            })
+        })
+    })
+    //保存编辑
+    app.post('/edit/:name/:day/:title',checkLogin, function (req, res) {
+        var currentUser = req.session.user;
+        PostMod.update(currentUser.name, req.params.day, req.params.title, req.body.content, function (err) {
+            var url = encodeURI('/u/' + req.params.name + '/' + req.params.day + '/' + req.params.title);
+            if (err) {
+                req.flash('error', err);
+                return res.redirect(url);//出错！返回文章页
+            }
+            req.flash('success', '修改成功!');
+            res.redirect(url);//成功！返回文章页
+        });
+    });
+    
+    
+    //删除个人博客
+    app.get('/remove/:name/:day/:title',checkLogin, function (req, res) {
+        var currentUser = req.session.user;
+        PostMod.remove(currentUser.name, req.params.day, req.params.title, function (err) {
+            if (err) {
+                req.flash('error', err);
+                return res.redirect('back');
+            }
+            req.flash('success', '删除成功!');
+            res.redirect('/');
+        });
+    });
+    
     //退出
     app.get('/logout', checkLogin, function (req, res) {
         req.session.user = null;
@@ -213,6 +259,7 @@ module.exports = function (app) {
         res.redirect('/');//登出成功后跳转到主页
     });
     
+    //凯强菜谱
     app.get('/kaiQiangCaiPu',function (req,res) {
         res.render('cook')
     })
