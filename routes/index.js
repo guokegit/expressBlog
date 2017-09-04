@@ -205,6 +205,26 @@ module.exports = function (app) {
             })
         })
     })
+    //发表评论
+    app.post('/u/:name/:day/:title',checkLogin,function (req,res) {
+        var currentUser=req.session.user;
+        var date = new Date();
+        var time = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " +
+                date.getHours() + ":" + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
+        var commit={
+            commitMan: currentUser.name,
+            commitTime:time,
+            commitContent:req.body.commitContent,
+        }
+        PostMod.addCommit(req.params.name,req.params.day,req.params.title,commit,function (error) {
+            if (error){
+                req.flash('error','评论失败');
+                return res.redirect('back')
+            }
+            req.flash('success','评论成功');
+            res.redirect('back')
+        })
+    })
     
     //编辑个人博客
     app.get('/edit/:name/:day/:title',checkLogin,function (req,res) {

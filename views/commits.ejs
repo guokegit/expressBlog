@@ -1,0 +1,15 @@
+<!--加载已有评论-->
+<%blog.commits.forEach(function(commit){%>
+    <div style="padding-left: 40px;padding-right: 40px;padding-top: 20px;font-size: 12px">
+        <a href="/u/<%=commit.commitMan%>"><%=commit.commitMan%></a>
+        <span style="color: #aaaaaa">  回复于  <%=commit.commitTime%></span>
+        <p><%-commit.commitContent%></p>
+        <hr style="height:1px;border-width:0;color:#999999;background-color:#999999" />
+    </div>
+<%})%>
+
+<!--添加评论-->
+<form method="post" style="margin: 40px">
+    <textarea name="commitContent" rows="5" cols="92" placeholder="<%-user?'请文明评论':'请先登录'%>"></textarea><br/>
+    <input type="submit" value="评论" />
+</form>
