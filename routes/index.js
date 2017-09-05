@@ -179,7 +179,7 @@ module.exports = function (app) {
              res.render('user',{
                  name:req.session.user == null ? '' : req.session.user.name,
                  user:req.session.user,
-                 title:req.params.name,
+                 title:req.params.name+'的主页',
                  blogArr:blogArr,
                  success:req.flash('success').toString(),
                  error:req.flash('error').toString(),

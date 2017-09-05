@@ -2,38 +2,42 @@
 <html>
 <head>
     <meta charset="UTF-8" />
-    <title>Blog</title>
+    <link rel="icon" href="http://localhost:3389/uploads/客.png" type="image/x-icon"/>
+    <title>过客Blog</title>
     <link rel="stylesheet" href="/stylesheets/style.css">
 </head>
 <body style="background-color: #f8f8f8">
 
 <header>
-    <% if (success) { %>
-    <p><%= success %></p>
-    <% } %>
-    <% if (error) { %>
-    <p><%= error %> </p>
-    <% } %>
-    <div style="display: flex;flex-direction: row;justify-content: space-between">
-        <h1><%= title %></h1>
-
-        <p style="color: blue;font-size: 14px">
-            <%if (user){%>
-                <a href="/u/<%=name%>"><%=name%></a> |  <a title="登出" href="/logout">退出</a>
-            <%}else {%>
-                <span><a title="登录" href="/login">登录</a></span>
-                <span><a title="注册" href="/reg">注册</a></span>
-            <%}%>
-        </p>
+    <img src="http://localhost:3389/uploads/客.png" style="height: 50px;border:solid 1px #000000;border-radius: 5px" />
+    <a title="主页" href="/" style="font-size:30px;margin-left: -100px">过客Blog</a>
+    <input type="text" class="search" placeholder="搜索博主/博客内容"/>
+    <div class="function">
+        <% if (user) { %>
+        <a title="上传文件" href="/upload">上传文件</a>
+        <a title="发表" style="margin-left: 20px" href="/post">发博客</a>
+        <% } %>
+    </div>
+    <div class="user">
+        <%if (user){%>
+        <a href="/u/<%=name%>"><%=name%></a> |  <a title="登出" href="/logout">退出</a>
+        <%}else {%>
+        <span><a title="登录" href="/login">登录</a></span> | <span><a title="注册" href="/reg">注册</a></span>
+        <%}%>
     </div>
 </header>
-<nav style="font-size: 20px">
-    <span><a title="主页" href="/">主页</a></span>
-    <% if (user) { %>
-        <span><a title="上传文件" href="/upload">上传文件</a></span>
-        <span><a title="发表" href="/post">发博客</a></span>
-    <% } %>
-</nav>
+
+
+<div class="title">
+        <h1><%= title %></h1>
+
+        <% if (success) { %>
+        <p style="color: red"><%= success %></p>
+        <% } %>
+        <% if (error) { %>
+        <p style="color: red"><%= error %> </p>
+        <% } %>
+</div>
 
 
 <article>

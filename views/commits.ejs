@@ -2,7 +2,7 @@
 <%blog.commits.forEach(function(commit){%>
     <div style="padding-left: 40px;padding-right: 40px;padding-top: 20px;font-size: 12px">
         <a href="/u/<%=commit.commitMan%>"><%=commit.commitMan%></a>
-        <span style="color: #aaaaaa">  回复于  <%=commit.commitTime%></span>
+        <span style="color: #aaaaaa">  评论于  <%=commit.commitTime%></span>
         <p><%-commit.commitContent%></p>
         <hr style="height:1px;border-width:0;color:#999999;background-color:#999999" />
     </div>
