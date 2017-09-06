@@ -6,13 +6,12 @@
             <%= blog.title %>
         </a>
     </h1>
-    <span style="font-size: 10px;color: #aaaaaa">
-        <a href="/u/<%=blog.name%>">
-            <%= blog.name %>
-        </a>
-    </span>
-      |
-    <span style="font-size: 10px;color: #aaaaaa"><%= blog.time.minute %></span>
+    <div style="font-size: 10px;color: #aaaaaa;height: 20px;display: flex;flex-direction: row;align-items: center">
+        <img src="<%=blog.icon%>" style="height: 30px;width: 30px;border: 0px;border-radius: 15px;margin-right: 10px" />
+        <a href="/u/<%=blog.name%>" style="margin-right: 10px"><%= blog.name %></a>
+        |
+        <span style="font-size: 10px;color: #aaaaaa;margin-right: 10px;margin-left: 10px"><%= blog.time.minute %></span>
+    </div>
     <p style="margin-top: 20px;color: #666666;font-size: 15px;line-height: 30px"><%- blog.content %></p>
 </div>
 

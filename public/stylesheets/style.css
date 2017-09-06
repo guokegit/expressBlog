@@ -105,11 +105,17 @@ p {
 }
 
 .user {
+    height: 40px;
+    padding-left: 10px;
+    padding-right: 10px;
     background-color: #000000;
     border: 0px;
-    padding: 10px;
     border-radius: 20px;
-    color: #ffffff
+    color: #ffffff;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
 }
 
 .user a {

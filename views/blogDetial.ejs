@@ -2,18 +2,18 @@
 
 <!--博客详情-->
 <div style="padding:20px;background-color:#ffffff;">
-    <% if (user && (user.name == blog.name)) { %>
+    <div style="margin-bottom: 20px">
+        <% if (user && (user.name == blog.name)) { %>
         <span><a class="edit" href="/edit/<%= blog.name %>/<%= blog.time.day %>/<%= blog.title %>">编辑</a></span>
         <span><a class="edit" href="/remove/<%= blog.name %>/<%= blog.time.day %>/<%= blog.title %>">删除</a></span>
-    <% } %>
-    <br/>
-    <span style="font-size: 10px;color: #aaaaaa">
-        <a href="/u/<%= blog.name %>">
-            <%= blog.name %>
-        </a>
-    </span>
-    |
-    <span style="font-size: 10px;color: #aaaaaa"><%= blog.time.minute %></span>
+        <% } %>
+    </div>
+    <div style="font-size: 10px;color: #aaaaaa;height: 20px;display: flex;flex-direction: row;align-items: center">
+        <img src="<%=blog.icon%>" style="height: 30px;width: 30px;border: 0px;border-radius: 15px;margin-right: 10px" />
+        <a href="/u/<%=blog.name%>" style="margin-right: 10px"><%= blog.name %></a>
+        |
+        <span style="font-size: 10px;color: #aaaaaa;margin-right: 10px;margin-left: 10px"><%= blog.time.minute %></span>
+    </div>
     <div style="margin-top: 20px;color: #666666;font-size: 15px;line-height: 30px"><%-blog.content %></div>
 </div>
 

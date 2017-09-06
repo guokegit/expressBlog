@@ -1,9 +1,12 @@
 <!--加载已有评论-->
 <%blog.commits.forEach(function(commit){%>
-    <div style="padding-left: 40px;padding-right: 40px;padding-top: 20px;font-size: 12px">
-        <a href="/u/<%=commit.commitMan%>"><%=commit.commitMan%></a>
-        <span style="color: #aaaaaa">  评论于  <%=commit.commitTime%></span>
-        <p><%-commit.commitContent%></p>
+    <div style="padding-left: 40px;padding-right: 40px;padding-top: 20px;font-size: 12px;">
+        <div style="display: flex;flex-direction: row;align-items: center;">
+            <img src="<%=commit.commitIcon%>" style="height: 30px;width: 30px;border: 0px;border-radius: 15px;margin-right: 10px" />
+            <a href="/u/<%=commit.commitMan%>" style="margin-right: 10px"><%=commit.commitMan%></a>
+            <span style="color: #aaaaaa;">  评论于  <%=commit.commitTime%></span>
+        </div>
+        <div style="margin-left: 40px"><%-commit.commitContent%></div>
         <hr style="height:1px;border-width:0;color:#999999;background-color:#999999" />
     </div>
 <%})%>

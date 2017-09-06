@@ -5,6 +5,8 @@
     <link rel="icon" href="http://39.108.190.79:3389/uploads/客.png" type="image/x-icon"/>
     <title>过客Blog</title>
     <link rel="stylesheet" href="/stylesheets/style.css">
+    <!--<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css">-->
+    <script src="https://use.fontawesome.com/4c5c9b6a5f.js"></script>
 </head>
 <body style="background-color: #f8f8f8">
 
@@ -20,9 +22,11 @@
     </div>
     <div class="user">
         <%if (user){%>
-        <a href="/u/<%=name%>"><%=name%></a> |  <a title="登出" href="/logout">退出</a>
+        <a title="点击修改图像" href="/updateIcon" style="margin-bottom: -4px"><img src="<%=user.icon%>" style="height: 30px;width: 30px;border: 0px;border-radius: 15px;" /></a>
+        <a href="/u/<%=name%>" style="margin-left: 10px;margin-right: 10px"><%=name%></a> |  <a title="登出" href="/logout" style="margin-left: 10px;">退出</a>
         <%}else {%>
-        <span><a title="登录" href="/login">登录</a></span> | <span><a title="注册" href="/reg">注册</a></span>
+        <img src='http://localhost:3389/uploads/icon.png' style="height: 30px;border: 0px;border-radius: 15px;" />
+        <a title="登录" href="/login" style="margin-left: 10px;margin-right: 10px">登录</a> | <a title="注册" href="/reg" style="margin-left: 10px;">注册</a>
         <%}%>
     </div>
 </header>

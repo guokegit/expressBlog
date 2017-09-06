@@ -11,6 +11,7 @@ var markdown = require('markdown').markdown;
 //构造对象
 function Post (blog) {
     this.name = blog.name;
+    this.icon=blog.icon;
     this.title = blog.title;
     this.content = blog.content;
 }
@@ -33,6 +34,7 @@ Post.prototype.save = function (callback) {
     //获取存储内容
     var postMessage = {
         name   : this.name,
+        icon   : this.icon,
         title  : this.title,
         content: this.content,
         time   : time,
@@ -253,6 +255,35 @@ Post.update = function (name, day, title, content, callback) {
                 'title'   : title,
             }, {
                 $set: {content: content}//更新内容
+            }, function (err) {
+                mongodb.close();
+                if (err) {
+                    return callback(err);
+                }
+                callback(null);
+            });
+        });
+    });
+};
+
+//修改图像
+Post.updateIcon = function (name,icon, callback) {
+    //打开数据库
+    mongodb.open(function (err, db) {
+        if (err) {
+            return callback(err);
+        }
+        //读取 posts 集合
+        db.collection('users', function (err, collection) {
+            if (err) {
+                mongodb.close();
+                return callback(err);
+            }
+            //更新文章内容
+            collection.update({//查找条件
+                'name'    : name,
+            }, {
+                $set: {icon: icon}//更新内容
             }, function (err) {
                 mongodb.close();
                 if (err) {

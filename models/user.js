@@ -19,7 +19,8 @@ User.prototype.save = function(callback) {
     var user = {
         name: this.name,
         password: this.password,
-        email: this.email
+        email: this.email,
+        icon:'http://localhost:3389/uploads/icon.png',
     };
     //打开数据库
     mongodb.open(function (err, db) {

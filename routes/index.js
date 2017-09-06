@@ -125,7 +125,7 @@ module.exports = function (app) {
         });
     });
     
-    //上传文件
+    // //上传文件
     app.get('/upload',checkLogin,function (req,res) {
         res.render('upload',{
             title:'上传文件',
@@ -138,6 +138,27 @@ module.exports = function (app) {
     app.post('/upload',checkLogin,function (req,res) {
         req.flash('success', '文件上传成功!');
         res.redirect('/upload');
+    })
+
+    //修改图像
+    app.get('/updateIcon',checkLogin,function (req,res) {
+        res.render('updateIcon',{
+            title:'修改图像',
+            user:req.session.user,
+            name:req.session.user == null ? '' : req.session.user.name,
+            success:req.flash('success').toString(),
+            error:req.flash('error').toString(),
+        })
+    })
+    app.post('/updateIcon',checkLogin,function (req,res) {
+        var icon='http://localhost:3389/uploads/'+req.files.file[0].originalname;
+        var currentUser=req.session.user
+        console.log(req.files.file[0].originalname)
+        PostMod.updateIcon(currentUser.name,icon,function (err) {
+            req.session.user.icon=icon;
+            req.flash('success', '图像修改成功!');
+            res.redirect('/');
+        })
     })
     
     //发博客
@@ -154,6 +175,7 @@ module.exports = function (app) {
         console.log(req.body);
         var artical = new PostMod({
             name   : req.session.user.name,
+            icon   : req.session.user.icon,
             title  : req.body.title,
             content: req.body.content,
         });
@@ -213,6 +235,7 @@ module.exports = function (app) {
                 date.getHours() + ":" + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
         var commit={
             commitMan: currentUser.name,
+            commitIcon:currentUser.icon,
             commitTime:time,
             commitContent:req.body.commitContent,
         }
