@@ -20,7 +20,7 @@ User.prototype.save = function(callback) {
         name: this.name,
         password: this.password,
         email: this.email,
-        icon:'http://localhost:3389/uploads/icon.png',
+        icon:'http://39.108.190.79:3389/uploads/icon.png',
     };
     //打开数据库
     mongodb.open(function (err, db) {
