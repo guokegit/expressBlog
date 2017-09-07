@@ -1,0 +1,9 @@
+<div style="margin-top: 40px;margin-bottom: 40px;width: 100%;" align="right">
+    <% if (!isFirstPage) { %>
+        <a href="?p=<%= page-1 %>" style="margin-right: 20px">上一页</a>
+    <% } %>
+
+    <% if (!isLastPage) { %>
+        <a href="?p=<%= page+1 %>">下一页</a>
+    <% } %>
+</div>

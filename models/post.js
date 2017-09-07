@@ -10,8 +10,9 @@ var markdown = require('markdown').markdown;
 
 //构造对象
 function Post (blog) {
+    //这里设定博客发表时就带的属性,并且不能给默认值,值需要传入的
     this.name = blog.name;
-    this.icon=blog.icon;
+    this.icon = blog.icon;
     this.title = blog.title;
     this.content = blog.content;
 }
@@ -39,6 +40,7 @@ Post.prototype.save = function (callback) {
         content: this.content,
         time   : time,
         commits: [],
+        pv     : 0,//浏览量
         
     };
     //打开数据库
@@ -65,42 +67,42 @@ Post.prototype.save = function (callback) {
 };
 
 //传 name 参数则获取一个人所有博客,不传则获取已存储的所有人的博客数据
-Post.getAll = function (name, callback) {
-    //打开数据库
-    mongodb.open(function (error, db) {
-        if (error) {
-            return callback(error);
-        }
-        //读取posts集合
-        db.collection('posts', function (err, collection) {
-            if (err) {
-                mongodb.close();
-                return callback(err);
-            }
-            
-            //查询参数
-            var query = {};
-            if (name) {
-                query.name = name;
-            }
-            //根据 query 对象查询
-            collection.find(query).sort({time: -1}).toArray(function (er, result) {
-                mongodb.close();
-                if (er) {
-                    return callback(er);
-                }
-                //把结果的内容项(markdown)转化为 html 返回
-                result.forEach(function (markdownResult) {
-                    markdownResult.content = markdown.toHTML(markdownResult.content);
-                });
-                return callback(null, result);//成功,以数组形式返回查询数据
-            });
-        });
-    });
-};
+// Post.getAll = function (name, callback) {
+//     //打开数据库
+//     mongodb.open(function (error, db) {
+//         if (error) {
+//             return callback(error);
+//         }
+//         //读取posts集合
+//         db.collection('posts', function (err, collection) {
+//             if (err) {
+//                 mongodb.close();
+//                 return callback(err);
+//             }
+//
+//             //查询参数
+//             var query = {};
+//             if (name) {
+//                 query.name = name;
+//             }
+//             //根据 query 对象查询
+//             collection.find(query).sort({time: -1}).toArray(function (er, result) {
+//                 mongodb.close();
+//                 if (er) {
+//                     return callback(er);
+//                 }
+//                 //把结果的内容项(markdown)转化为 html 返回
+//                 result.forEach(function (markdownResult) {
+//                     markdownResult.content = markdown.toHTML(markdownResult.content);
+//                 });
+//                 return callback(null, result);//成功,以数组形式返回查询数据
+//             });
+//         });
+//     });
+// };
 
-//一次获取十篇文章
-Post.getTen = function(name, page, callback) {
+//一次获取五篇文章
+Post.getFive = function (name, page, callback) {
     //打开数据库
     mongodb.open(function (err, db) {
         if (err) {
@@ -117,24 +119,29 @@ Post.getTen = function(name, page, callback) {
                 query.name = name;
             }
             //使用 count 返回特定查询的文档数 total
-            collection.count(query,function (err,total) {
-                if (err){
-                    return callback(err)
+            collection.count(query, function (err, total) {
+                if (err) {
+                    mongodb.close();
+                    return callback(err);
                 }
                 //根据 query 对象查询，并跳过前 (page-1)*10 个结果，返回之后的 10 个结果
-                collection.find(query,{skip:(page-1)*10,limit:10}).sort({time:-1}).toArray(function (err,limitBlogArr) {
-                    if (err){
-                        return callback(err)
+                collection.find(query, {
+                    skip : page * 5,
+                    limit: 5,
+                }).sort({time: -1}).toArray(function (err, limitBlogArr) {
+                    mongodb.close();
+                    if (err) {
+                        return callback(err);
                     }
                     limitBlogArr.forEach(function (blog) {
-                        blog.content=markdown.toHTML(blog.content)//博客内容markdown转换成 html
-                        blog.commits.forEach(function (commit) {// 评论 markdown 转换成 html
-                            commit.commitContent=markdown.toHTML(commit.commitContent)
-                        })
-                    })
-                    return callback(null,limitBlogArr,total)
-                })
-            })
+                        blog.content = markdown.toHTML(blog.content);//博客内容markdown转换成 html
+                        // blog.commits.forEach(function (commit) {// 评论 markdown 转换成 html
+                        //     commit.commitContent=markdown.toHTML(commit.commitContent)
+                        // })
+                    });
+                    return callback(null, limitBlogArr, total);
+                });
+            });
         });
     });
 };
@@ -158,19 +165,29 @@ Post.getOne = function (name, day, title, callback) {
                 'title'   : title,
                 'time.day': day,
             }, function (er, result) {
-                mongodb.close();
                 if (er) {
+                    mongodb.close();
                     return callback(er);
                 }
-                console.log(result);
-                //markdown 格式的 content转化为 html
                 if (result) {
+                    //每浏览一次,pv+=1,本次浏览不包含在当前pv数内
+                    collection.update({
+                        'name'    : name,
+                        'title'   : title,
+                        'time.day': day,
+                    }, {$inc: {pv: 1}}, function (err) {
+                        mongodb.close();
+                        if (err) {
+                            return callback(er);
+                        }
+                    });
+                    //markdown 格式的 content转化为 html
                     result.content = markdown.toHTML(result.content);
                     result.commits.forEach(function (commit) {
                         commit.commitContent = markdown.toHTML(commit.commitContent);
                     });
+                    return callback(null, result);
                 }
-                return callback(null, result);
             });
         });
     });
@@ -267,7 +284,7 @@ Post.update = function (name, day, title, content, callback) {
 };
 
 //修改图像
-Post.updateIcon = function (name,icon, callback) {
+Post.updateIcon = function (name, icon, callback) {
     //打开数据库
     mongodb.open(function (err, db) {
         if (err) {
@@ -281,7 +298,7 @@ Post.updateIcon = function (name,icon, callback) {
             }
             //更新文章内容
             collection.update({//查找条件
-                'name'    : name,
+                'name': name,
             }, {
                 $set: {icon: icon}//更新内容
             }, function (err) {

@@ -27,16 +27,21 @@ function checkNotLogin (req, res, next) {
 module.exports = function (app) {
     //主页
     app.get('/', function (req, res) {
+        //获取起始页数
+        var p = req.query.p ? parseInt(req.query.p) : 0;
         //name 参宿为 null,获取所有博客
-        PostMod.getAll(null, function (error, result) {
+        PostMod.getFive(null, p, function (error, limitblogArr, total) {
             if (error) {
-                result = [];
+                limitblogArr = [];
             }
             res.render('index', {
                 title  : '主页',
                 user   : req.session.user,
                 name   : req.session.user == null ? '' : req.session.user.name,
-                blogArr: result,
+                blogArr: limitblogArr,
+                page   : p,
+                isFirstPage:p==0,
+                isLastPage:(p*5+limitblogArr.length)==total,
                 success: req.flash('success').toString(),
                 error  : req.flash('error').toString(),
             });
@@ -125,41 +130,41 @@ module.exports = function (app) {
         });
     });
     
-    // //上传文件
-    app.get('/upload',checkLogin,function (req,res) {
-        res.render('upload',{
-            title:'上传文件',
-            user:req.session.user,
-            name:req.session.user == null ? '' : req.session.user.name,
-            success:req.flash('success').toString(),
-            error:req.flash('error').toString(),
-        })
-    })
-    app.post('/upload',checkLogin,function (req,res) {
+    //上传文件
+    app.get('/upload', checkLogin, function (req, res) {
+        res.render('upload', {
+            title  : '上传文件',
+            user   : req.session.user,
+            name   : req.session.user == null ? '' : req.session.user.name,
+            success: req.flash('success').toString(),
+            error  : req.flash('error').toString(),
+        });
+    });
+    app.post('/upload', checkLogin, function (req, res) {
         req.flash('success', '文件上传成功!');
         res.redirect('/upload');
-    })
-
+    });
+    
     //修改图像
-    app.get('/updateIcon',checkLogin,function (req,res) {
-        res.render('updateIcon',{
-            title:'修改图像',
-            user:req.session.user,
-            name:req.session.user == null ? '' : req.session.user.name,
-            success:req.flash('success').toString(),
-            error:req.flash('error').toString(),
-        })
-    })
-    app.post('/updateIcon',checkLogin,function (req,res) {
-        var icon='http://39.108.190.79:3389/uploads/'+req.files.file[0].originalname;
-        var currentUser=req.session.user
-        console.log(req.files.file[0].originalname)
-        PostMod.updateIcon(currentUser.name,icon,function (err) {
-            req.session.user.icon=icon;
+    app.get('/updateIcon', checkLogin, function (req, res) {
+        res.render('updateIcon', {
+            title  : '修改图像',
+            user   : req.session.user,
+            name   : req.session.user == null ? '' : req.session.user.name,
+            success: req.flash('success').toString(),
+            error  : req.flash('error').toString(),
+        });
+    });
+    app.post('/updateIcon', checkLogin, function (req, res) {
+        var icon = 'http://39.108.190.79:3389/uploads/' + req.files.file[0].originalname;
+        var currentUser = req.session.user;
+        console.log(req.files.file[0].originalname);
+        PostMod.updateIcon(currentUser.name, icon, function (err) {
+            req.session.user.icon = icon;
             req.flash('success', '图像修改成功!');
             res.redirect('/');
-        })
-    })
+        });
+    });
     
     //发博客
     app.get('/post', checkLogin, function (req, res) {
@@ -192,83 +197,94 @@ module.exports = function (app) {
     });
     
     //用户博客
-    app.get('/u/:name',function (req,res) {
-         PostMod.getAll(req.params.name,function (error,blogArr) {
-             if (error){
-                 req.flash('error','获取该用户博客失败')
-                 res.redirect('/')
-             }
-             res.render('user',{
-                 name:req.session.user == null ? '' : req.session.user.name,
-                 user:req.session.user,
-                 title:req.params.name+'的主页',
-                 blogArr:blogArr,
-                 success:req.flash('success').toString(),
-                 error:req.flash('error').toString(),
-             })
-         })
-     })
+    app.get('/u/:name', function (req, res) {
+        var p = req.query.p ? parseInt(req.query.p) : 0;
+        User.get(req.params.name, function (err, user) {
+            if (!user) {
+                req.flash('error', '用户不存在!');
+                return res.redirect('/');
+            };
+            PostMod.getFive(req.params.name, p,function (error, blogArr,total) {
+                if (error) {
+                    req.flash('error', '获取该用户博客失败');
+                    res.redirect('/');
+                }
+                res.render('user', {
+                    name   : req.session.user == null ? '' : req.session.user.name,
+                    user   : req.session.user,
+                    title  : req.params.name + '的主页',
+                    blogArr: blogArr,
+                    page   : p,
+                    isFirstPage:p==0,
+                    isLastPage:(p*5+blogArr.length)==total,
+                    success: req.flash('success').toString(),
+                    error  : req.flash('error').toString(),
+                });
+            });
+            
+        })
+    });
     
     //博客详情
-    app.get('/u/:name/:day/:title',function (req,res) {
-        PostMod.getOne(req.params.name,req.params.day,req.params.title,function (error,blog) {
-            if (error){
-               req.flash('error','获取博客详情失败')
-                res.redirect('/')
+    app.get('/u/:name/:day/:title', function (req, res) {
+        PostMod.getOne(req.params.name, req.params.day, req.params.title, function (error, blog) {
+            if (error) {
+                req.flash('error', '获取博客详情失败');
+                res.redirect('/');
             }
-            res.render('blogDetial',{
-                title:req.params.title,
-                user:req.session.user,
-                name:req.session.user == null ? '' : req.session.user.name,
-                blog:blog,
-                success:req.flash('success').toString(),
-                error:req.flash('error').toString(),
-                
-            })
-        })
-    })
-    //发表评论
-    app.post('/u/:name/:day/:title',checkLogin,function (req,res) {
-        var currentUser=req.session.user;
-        var date = new Date();
-        var time = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " +
-                date.getHours() + ":" + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
-        var commit={
-            commitMan: currentUser.name,
-            commitIcon:currentUser.icon,
-            commitTime:time,
-            commitContent:req.body.commitContent,
-        }
-        PostMod.addCommit(req.params.name,req.params.day,req.params.title,commit,function (error) {
-            if (error){
-                req.flash('error','评论失败');
-                return res.redirect('back')
-            }
-            req.flash('success','评论成功');
-            res.redirect('back')
-        })
-    })
-    
-    //编辑个人博客
-    app.get('/edit/:name/:day/:title',checkLogin,function (req,res) {
-        var currentUser=req.session.user;
-        PostMod.edit(currentUser.name,req.params.day,req.params.title,function (error,blog) {
-            if(error){
-               req.flash('error').toString()
-               return res.redirect('back')
-            }
-            res.render('edit',{
-                title:'编辑',
+            res.render('blogDetial', {
+                title  : req.params.title,
                 user   : req.session.user,
                 name   : req.session.user == null ? '' : req.session.user.name,
                 blog   : blog,
                 success: req.flash('success').toString(),
                 error  : req.flash('error').toString(),
-            })
-        })
-    })
+                
+            });
+        });
+    });
+    //发表评论
+    app.post('/u/:name/:day/:title', checkLogin, function (req, res) {
+        var currentUser = req.session.user;
+        var date = new Date();
+        var time = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' +
+            date.getHours() + ':' + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
+        var commit = {
+            commitMan    : currentUser.name,
+            commitIcon   : currentUser.icon,
+            commitTime   : time,
+            commitContent: req.body.commitContent,
+        };
+        PostMod.addCommit(req.params.name, req.params.day, req.params.title, commit, function (error) {
+            if (error) {
+                req.flash('error', '评论失败');
+                return res.redirect('back');
+            }
+            req.flash('success', '评论成功');
+            res.redirect('back');
+        });
+    });
+    
+    //编辑个人博客
+    app.get('/edit/:name/:day/:title', checkLogin, function (req, res) {
+        var currentUser = req.session.user;
+        PostMod.edit(currentUser.name, req.params.day, req.params.title, function (error, blog) {
+            if (error) {
+                req.flash('error').toString();
+                return res.redirect('back');
+            }
+            res.render('edit', {
+                title  : '编辑',
+                user   : req.session.user,
+                name   : req.session.user == null ? '' : req.session.user.name,
+                blog   : blog,
+                success: req.flash('success').toString(),
+                error  : req.flash('error').toString(),
+            });
+        });
+    });
     //保存编辑
-    app.post('/edit/:name/:day/:title',checkLogin, function (req, res) {
+    app.post('/edit/:name/:day/:title', checkLogin, function (req, res) {
         var currentUser = req.session.user;
         PostMod.update(currentUser.name, req.params.day, req.params.title, req.body.content, function (err) {
             var url = encodeURI('/u/' + req.params.name + '/' + req.params.day + '/' + req.params.title);
@@ -281,9 +297,8 @@ module.exports = function (app) {
         });
     });
     
-    
     //删除个人博客
-    app.get('/remove/:name/:day/:title',checkLogin, function (req, res) {
+    app.get('/remove/:name/:day/:title', checkLogin, function (req, res) {
         var currentUser = req.session.user;
         PostMod.remove(currentUser.name, req.params.day, req.params.title, function (err) {
             if (err) {
@@ -303,7 +318,7 @@ module.exports = function (app) {
     });
     
     //凯强菜谱
-    app.get('/kaiQiangCaiPu',function (req,res) {
-        res.render('cook')
-    })
+    app.get('/kaiQiangCaiPu', function (req, res) {
+        res.render('cook');
+    });
 };
