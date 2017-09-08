@@ -133,12 +133,12 @@ Post.getFive = function (name, page, callback) {
                     if (err) {
                         return callback(err);
                     }
-                    limitBlogArr.forEach(function (blog) {
-                        blog.content = markdown.toHTML(blog.content);//博客内容markdown转换成 html
-                        // blog.commits.forEach(function (commit) {// 评论 markdown 转换成 html
-                        //     commit.commitContent=markdown.toHTML(commit.commitContent)
-                        // })
-                    });
+                    // limitBlogArr.forEach(function (blog) {
+                    //     blog.content = markdown.toHTML(blog.content);//博客内容markdown转换成 html
+                    // blog.commits.forEach(function (commit) {// 评论 markdown 转换成 html
+                    //     commit.commitContent=markdown.toHTML(commit.commitContent)
+                    // })
+                    // });
                     return callback(null, limitBlogArr, total);
                 });
             });
@@ -182,10 +182,10 @@ Post.getOne = function (name, day, title, callback) {
                         }
                     });
                     //markdown 格式的 content转化为 html
-                    result.content = markdown.toHTML(result.content);
-                    result.commits.forEach(function (commit) {
-                        commit.commitContent = markdown.toHTML(commit.commitContent);
-                    });
+                    // result.content = markdown.toHTML(result.content);
+                    // result.commits.forEach(function (commit) {
+                    //     commit.commitContent = markdown.toHTML(commit.commitContent);
+                    // });
                     return callback(null, result);
                 }
             });
@@ -338,6 +338,33 @@ Post.remove = function (name, day, title, callback) {
                     return callback(err);
                 }
                 callback(null);
+            });
+        });
+    });
+};
+
+//按标题搜索
+Post.search = function (keyword, callback) {
+    mongodb.open(function (err, db) {
+        if (err) {
+            return callback(err);
+        }
+        db.collection('posts', function (err, collection) {
+            if (err) {
+                mongodb.close();
+                return callback(err);
+            }
+            var pattern = new RegExp(keyword, 'i');
+            collection.find({
+                'title': pattern,
+            }).sort({
+                time: -1,
+            }).toArray(function (err, docs) {
+                mongodb.close();
+                if (err) {
+                    return callback(err);
+                }
+                callback(null, docs);
             });
         });
     });

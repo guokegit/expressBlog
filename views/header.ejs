@@ -5,13 +5,27 @@
     <link rel="icon" href="/uploads/客.png" type="image/x-icon"/>
     <title>过客Blog</title>
     <link rel="stylesheet" href="/stylesheets/style.css">
+    <script charset="utf-8" src="/KindEditor/kindeditor-all-min.js"></script>
+    <script charset="utf-8" src="/KindEditor/lang/zh_CN.js"></script>
+    <script>
+        var editor;
+        KindEditor.ready(function(K) {
+            editor = K.create('textarea', {
+                allowImageUpload : false,
+                items : [
+                    'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic',
+                    'underline', 'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright',
+                    'insertorderedlist', 'insertunorderedlist', '|', 'emoticons', 'image', 'link']
+            });
+        });
+    </script>
 </head>
 <body style="background-color: #f8f8f8">
 
 <header>
     <img src="http://39.108.190.79:3389/uploads/客.png" style="height: 50px;border:solid 1px #000000;border-radius: 5px" />
     <a title="主页" href="/" style="font-size:30px;">过客Blog</a>
-    <input type="text" class="search" placeholder="搜索博主/博客内容"/>
+    <form action="/search" method="GET"><input type="text" name="keyword" class="search" placeholder="搜索博客内容"/></form>
     <div class="function">
         <% if (user) { %>
         <a title="上传文件" href="/upload">上传文件</a>

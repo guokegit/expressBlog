@@ -265,6 +265,26 @@ module.exports = function (app) {
         });
     });
     
+    //按标题搜索博客
+    app.get('/search',function (req,res) {
+        var keyword=req.query.keyword;
+        PostMod.search(keyword,function (err,searchBlog) {
+            if (err){
+                req.flash('error','搜索失败')
+                return res.redirect('back')
+            }
+            console.log(searchBlog)
+            res.render('search',{
+                title:'搜索到有关"'+keyword+'"的内容',
+                user   : req.session.user,
+                name   : req.session.user == null ? '' : req.session.user.name,
+                blogArr: searchBlog,
+                success: req.flash('success').toString(),
+                error  : req.flash('error').toString(),
+            })
+        })
+    })
+    
     //编辑个人博客
     app.get('/edit/:name/:day/:title', checkLogin, function (req, res) {
         var currentUser = req.session.user;
@@ -296,7 +316,6 @@ module.exports = function (app) {
             res.redirect(url);//成功！返回文章页
         });
     });
-    
     //删除个人博客
     app.get('/remove/:name/:day/:title', checkLogin, function (req, res) {
         var currentUser = req.session.user;
