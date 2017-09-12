@@ -12,22 +12,12 @@
         <img src="<%=blog.icon%>" style="height: 30px;width: 30px;border: 0px;border-radius: 15px;margin-right: 10px" />
         <a href="/u/<%=blog.name%>" style="margin-right: 10px"><%= blog.name %></a>
         |
-        <span style="font-size: 10px;color: #aaaaaa;margin-right: 10px;margin-left: 10px"><%= blog.time.minute %></span>
+        <span style="margin-right: 10px;margin-left: 10px"><%= blog.time.minute %></span>
+        <img src="http://39.108.190.79:3389/uploads/eye.png" style="margin-right: 5px;opacity: 0.6">
+        <span style="color: #aaaaaa"><%=blog.pv%></span>
     </div>
     <div style="margin-top: 20px;color: #666666;font-size: 15px;line-height: 30px"><%-blog.content %></div>
-    <div style="width: 100%;" align="right">
-        <div style="height: 30px;border-top: solid 1px #dddddd;width: 150px;display: flex;flex-direction: row;justify-content: space-around;align-items: center">
-            <div>
-                <img src="http://39.108.190.79:3389/uploads/eye.png" style="margin-right: 5px;opacity: 0.6">
-                <span style="color: #aaaaaa"><%=blog.pv%></span>
-            </div>
-            <div>
-                <img src="http://39.108.190.79:3389/uploads/comment.png" style="margin-right: 5px;opacity: 0.6">
-                <span style="color: #aaaaaa"><%=blog.commits.length%></span>
-            </div>
-        </div>
-    </div></div>
-
+</div>
 <!--评论列表-->
 <%- include commits%>
 <%- include footer %>

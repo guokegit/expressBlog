@@ -212,7 +212,7 @@ module.exports = function (app) {
                 res.render('user', {
                     name   : req.session.user == null ? '' : req.session.user.name,
                     user   : req.session.user,
-                    title  : req.params.name + '的主页',
+                    title  : req.params.name + '的主页'+'<span style="font-size: 18px;color: #aaaaaa;margin-left: 20px">共'+total+'篇</span>',
                     blogArr: blogArr,
                     page   : p,
                     isFirstPage:p==0,

@@ -181,11 +181,9 @@ Post.getOne = function (name, day, title, callback) {
                             return callback(er);
                         }
                     });
-                    //markdown 格式的 content转化为 html
-                    // result.content = markdown.toHTML(result.content);
-                    // result.commits.forEach(function (commit) {
-                    //     commit.commitContent = markdown.toHTML(commit.commitContent);
-                    // });
+                    result.commits=result.commits.sort(function (a,b) {
+                        return Date.parse(new Date(b.commitTime))-Date.parse(new Date(a.commitTime));
+                    })
                     return callback(null, result);
                 }
             });
@@ -223,7 +221,7 @@ Post.addCommit = function (name, day, title, commit, callback) {
     });
 };
 
-//返回原始发表的内容（markdown 格式）
+//返回原始发表的内容
 Post.edit = function (name, day, title, callback) {
     //打开数据库
     mongodb.open(function (err, db) {

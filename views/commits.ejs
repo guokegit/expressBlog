@@ -1,18 +1,28 @@
+
+
+<!--添加评论-->
+<form method="post" style="margin-top: 60px">
+    <img src="<%=user.icon%>" style="float: left;height: 30px;width: 30px;border: 0px;border-radius: 15px;margin-right: 10px;margin-top: 50px" />
+    <textarea  name="commitContent" rows="5"  placeholder="<%-user?'请文明评论':'请先登录'%>"></textarea><br/>
+    <div class="flex-row">
+        <span style="color: #aaaaaa"><%=blog.commits.length%>条评论</span>
+        <input type="submit" value="评论" />
+    </div>
+    <hr style="height:1px;border-width:0px;color:#999999;background-color:#999999" />
+</form>
+
 <!--加载已有评论-->
-<%blog.commits.forEach(function(commit){%>
-    <div style="padding-left: 40px;padding-right: 40px;padding-top: 20px;font-size: 12px;">
+<%blog.commits.forEach(function(commit,index){%>
+<div style="padding-left: 40px;padding-right: 40px;padding-top: 20px;font-size: 12px;">
+    <div class="flex-row">
         <div style="display: flex;flex-direction: row;align-items: center;">
             <img src="<%=commit.commitIcon%>" style="height: 30px;width: 30px;border: 0px;border-radius: 15px;margin-right: 10px" />
             <a href="/u/<%=commit.commitMan%>" style="margin-right: 10px"><%=commit.commitMan%></a>
             <span style="color: #aaaaaa;">  评论于  <%=commit.commitTime%></span>
         </div>
-        <div style="margin-left: 40px;margin-top: 10px;margin-bottom: 20px;"><%-commit.commitContent%></div>
-        <hr style="height:1px;border-width:0px;color:#999999;background-color:#999999" />
+        <span style="color: #aaaaaa;"><%=blog.commits.length-index+'楼'%></span>
     </div>
+    <div style="margin-left: 40px;margin-top: 10px;margin-bottom: 20px;"><%-commit.commitContent%></div>
+    <hr style="height:1px;border-width:0px;color:#999999;background-color:#999999" />
+</div>
 <%})%>
-
-<!--添加评论-->
-<form method="post" style="margin: 40px">
-    <textarea name="commitContent" rows="5" cols="100" placeholder="<%-user?'请文明评论':'请先登录'%>"></textarea><br/>
-    <input type="submit" value="评论" />
-</form>
