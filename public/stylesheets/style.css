@@ -19,8 +19,10 @@ input[type=submit]{
     font-size: 10px;
     margin: 10px 0px 10px 0px;
     padding: 5px 20px 5px 20px;
-    border-radius: 10px;
-    background-color: #ffffff;
+    border: 0px;
+    border-radius: 18px;
+    background-color: #000000;
+    color: #ffffff;
     cursor:pointer
 }
 
