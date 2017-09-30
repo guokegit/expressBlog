@@ -2,8 +2,8 @@
 
 <!--添加评论-->
 <form method="post" style="margin-top: 60px">
-    <img src="<%=user.icon%>" style="float: left;height: 30px;width: 30px;border: 0px;border-radius: 15px;margin-right: 10px;margin-top: 50px" />
-    <textarea  name="commitContent" rows="5"  placeholder="<%-user?'请文明评论':'请先登录'%>"></textarea><br/>
+    <img src='<%-user?user.icon:'/uploads/icon.png'%>' style="float: left;height: 30px;width: 30px;border: 0px;border-radius: 15px;margin-right: 10px;margin-top: 50px" />
+    <textarea  name="commitContent" rows="5"  placeholder='<%-user?'请文明评论':'请先登录'%>' ></textarea><br/>
     <div class="flex-row">
         <span style="color: #aaaaaa"><%=blog.commits.length%>条评论</span>
         <input type="submit" value="评论" />
