@@ -340,4 +340,16 @@ module.exports = function (app) {
     app.get('/kaiQiangCaiPu', function (req, res) {
         res.render('cook');
     });
+    
+    //微信小程序
+    app.get('/weixin', function (req, res) {
+        //name 参宿为 null,获取所有博客
+        PostMod.getAll(null, function (error, blogArr) {
+            if (error) {
+                blogArr = [];
+            }
+            res.send(blogArr);
+        });
+        
+    });
 };

@@ -67,39 +67,39 @@ Post.prototype.save = function (callback) {
 };
 
 //传 name 参数则获取一个人所有博客,不传则获取已存储的所有人的博客数据
-// Post.getAll = function (name, callback) {
-//     //打开数据库
-//     mongodb.open(function (error, db) {
-//         if (error) {
-//             return callback(error);
-//         }
-//         //读取posts集合
-//         db.collection('posts', function (err, collection) {
-//             if (err) {
-//                 mongodb.close();
-//                 return callback(err);
-//             }
-//
-//             //查询参数
-//             var query = {};
-//             if (name) {
-//                 query.name = name;
-//             }
-//             //根据 query 对象查询
-//             collection.find(query).sort({time: -1}).toArray(function (er, result) {
-//                 mongodb.close();
-//                 if (er) {
-//                     return callback(er);
-//                 }
-//                 //把结果的内容项(markdown)转化为 html 返回
-//                 result.forEach(function (markdownResult) {
-//                     markdownResult.content = markdown.toHTML(markdownResult.content);
-//                 });
-//                 return callback(null, result);//成功,以数组形式返回查询数据
-//             });
-//         });
-//     });
-// };
+Post.getAll = function (name, callback) {
+    //打开数据库
+    mongodb.open(function (error, db) {
+        if (error) {
+            return callback(error);
+        }
+        //读取posts集合
+        db.collection('posts', function (err, collection) {
+            if (err) {
+                mongodb.close();
+                return callback(err);
+            }
+
+            //查询参数
+            var query = {};
+            if (name) {
+                query.name = name;
+            }
+            //根据 query 对象查询
+            collection.find(query).sort({time: -1}).toArray(function (er, result) {
+                mongodb.close();
+                if (er) {
+                    return callback(er);
+                }
+                //把结果的内容项(markdown)转化为 html 返回
+                result.forEach(function (markdownResult) {
+                    markdownResult.content = markdown.toHTML(markdownResult.content);
+                });
+                return callback(null, result);//成功,以数组形式返回查询数据
+            });
+        });
+    });
+};
 
 //一次获取五篇文章
 Post.getFive = function (name, page, callback) {
