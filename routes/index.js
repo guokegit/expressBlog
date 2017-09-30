@@ -156,7 +156,7 @@ module.exports = function (app) {
         });
     });
     app.post('/updateIcon', checkLogin, function (req, res) {
-        var icon = 'http://39.108.190.79:3389/uploads/' + req.files.file[0].originalname;
+        var icon = '/uploads/' + req.files.file[0].originalname;
         var currentUser = req.session.user;
         console.log(req.files.file[0].originalname);
         PostMod.updateIcon(currentUser.name, icon, function (err) {

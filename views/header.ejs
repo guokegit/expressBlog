@@ -22,7 +22,7 @@
 <body style="background-color: #f8f8f8">
 
 <header>
-    <img src="http://39.108.190.79:3389/uploads/客.png" style="height: 50px;border:solid 1px #000000;border-radius: 5px" />
+    <img src="/uploads/客.png" style="height: 50px;border:solid 1px #000000;border-radius: 5px" />
     <a title="主页" href="/" style="font-size:30px;">过客Blog</a>
     <form action="/search" method="GET"><input type="text" name="keyword" class="search" placeholder="搜索博客"/></form>
     <div class="function">
@@ -37,7 +37,7 @@
         <a title="点击修改图像" href="/updateIcon" style="margin-bottom: -4px"><img src="<%=user.icon%>" style="height: 30px;width: 30px;border: 0px;border-radius: 15px;" /></a>
         <a href="/u/<%=name%>" style="margin-left: 10px;margin-right: 10px"><%=name%></a> |  <a title="登出" href="/logout" style="margin-left: 10px;">退出</a>
         <%}else {%>
-        <img src='http://39.108.190.79:3389/uploads/icon.png' style="height: 30px;border: 0px;border-radius: 15px;" />
+        <img src='/uploads/icon.png' style="height: 30px;border: 0px;border-radius: 15px;" />
         <a title="登录" href="/login" style="margin-left: 10px;margin-right: 10px">登录</a> | <a title="注册" href="/reg" style="margin-left: 10px;">注册</a>
         <%}%>
     </div>
